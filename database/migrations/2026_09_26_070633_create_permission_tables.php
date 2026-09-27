@@ -39,6 +39,19 @@ return new class extends Migration
             }
             $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
             $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
+
+            // --- Custom BASA role columns ---
+            $table->string('roleID', 20)->unique()->comment('Auto-generated ID e.g. Role-001');
+            $table->string('roleName', 20)->comment('Display name, max 20 characters');
+            $table->boolean('canCreate')->default(true)->comment('Permission to create records');
+            $table->boolean('canRead')->default(true)->comment('Permission to read/view records');
+            $table->boolean('canUpdate')->default(true)->comment('Permission to update records');
+            $table->boolean('canDelete')->default(true)->comment('Permission to delete records');
+            $table->boolean('canPrint')->default(true)->comment('Permission to print records');
+            $table->boolean('canImport')->default(true)->comment('Permission to import data');
+            $table->boolean('canExport')->default(true)->comment('Permission to export data');
+            // ---------------------------------
+
             $table->timestamps();
             if ($teams || config('permission.testing')) {
                 $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);
