@@ -9,7 +9,7 @@ class CustomDropdown extends Page
 {
     protected string $view = 'filament.pages.custom-dropdown';
 
-    protected static ?int $navigationSort = 102;
+    protected static ?int $navigationSort = 103;
 
     public static function getNavigationIcon(): string|\BackedEnum|null
     {
