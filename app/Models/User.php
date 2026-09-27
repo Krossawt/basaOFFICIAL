@@ -19,7 +19,9 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole('super_admin') || $this->hasRole('admin');
+        // All seeded BASA roles are valid panel users.
+        // Fine-grained resource/page access is enforced via Filament policies.
+        return $this->roles()->exists();
     }
 
     /**
