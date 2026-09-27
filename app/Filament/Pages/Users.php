@@ -5,20 +5,20 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 
-class Configure extends Page
+class Users extends Page
 {
-    protected string $view = 'filament.pages.configure';
+    protected string $view = 'filament.pages.users';
 
-    protected static ?int $navigationSort = 104;
+    protected static ?int $navigationSort = 102;
 
     public static function getNavigationIcon(): string|\BackedEnum|null
     {
-        return 'heroicon-o-cog-6-tooth';
+        return 'heroicon-o-users';
     }
 
     public static function getNavigationLabel(): string
     {
-        return 'Configure';
+        return 'Users';
     }
 
     public static function getNavigationGroup(): string|\UnitEnum|null
@@ -28,7 +28,7 @@ class Configure extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return 'Configure';
+        return 'Users';
     }
 
     public static function canAccess(): bool
