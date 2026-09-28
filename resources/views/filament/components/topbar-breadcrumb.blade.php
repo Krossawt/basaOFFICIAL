@@ -14,6 +14,19 @@
 @endphp
 
 @if ($page)
+    <style>
+        /* Keep the panel brand in the sidebar, but leave the header for navigation context. */
+        .fi-topbar .fi-topbar-start > .fi-logo,
+        .fi-topbar .fi-topbar-start > a:has(> .fi-logo) {
+            display: none;
+        }
+
+        /* A compact visual gap on either side of each breadcrumb separator. */
+        .basa-topbar-breadcrumb {
+            gap: 0.75rem;
+        }
+    </style>
+
     <nav class="basa-topbar-breadcrumb" aria-label="Breadcrumb">
         <span class="basa-bc-root">BASA</span>
         <span class="basa-bc-sep" aria-hidden="true">&rsaquo;</span>
