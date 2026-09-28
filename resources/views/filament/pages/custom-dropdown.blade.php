@@ -1,3 +1,3 @@
 <x-filament-panels::page>
-    {{-- Custom Dropdown content goes here --}}
+    {{ $this->table }}
 </x-filament-panels::page>
