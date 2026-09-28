@@ -14,10 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create all system roles (Role-001 … Role-019)
+        // 1. Seed system permissions (Create, Read, Update, Delete, Print, Import, Export)
+        $this->call(PermissionSeeder::class);
+
+        // 2. Create all system roles (Role-001 … Role-019)
         $this->call(RoleSeeder::class);
 
-        // 2. Create one user account per role
+        // 3. Create one user account per role
         $this->call(UserSeeder::class);
     }
 }
