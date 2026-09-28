@@ -8,6 +8,8 @@
         'filament.admin.pages.permissions'     => 'Permissions',
         'filament.admin.pages.users'           => 'Users',
         'filament.admin.pages.custom-dropdown' => 'Custom Dropdown',
+        'filament.admin.pages.create-custom-dropdown' => 'Create Dropdown',
+        'filament.admin.pages.custom-dropdown.{record}.edit' => 'Edit Dropdown',
         'filament.admin.pages.configure'       => 'Configure',
     ];
     $page = $map[$route] ?? null;
