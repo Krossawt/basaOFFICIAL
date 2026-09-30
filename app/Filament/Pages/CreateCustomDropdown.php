@@ -8,6 +8,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -58,6 +59,23 @@ class CreateCustomDropdown extends Page
                             ->native(false),
                     ])
                     ->columns(2),
+                Section::make('Dropdown Type')
+                    ->description('Enable the type(s) this dropdown is used for.')
+                    ->schema([
+                        Toggle::make('is_roles_dropdown')
+                            ->label('Roles Dropdown')
+                            ->helperText('Turn on if this dropdown is used as a Roles Dropdown.')
+                            ->onColor('success')
+                            ->offColor('gray')
+                            ->default(false),
+                        Toggle::make('is_permissions_dropdown')
+                            ->label('Permissions Dropdown')
+                            ->helperText('Turn on if this dropdown is used as a Permissions Dropdown.')
+                            ->onColor('success')
+                            ->offColor('gray')
+                            ->default(false),
+                    ])
+                    ->columns(2),
                 Section::make('Table Section')
                     ->description('Add the values that users can select in this dropdown.')
                     ->schema([
@@ -105,10 +123,34 @@ class CreateCustomDropdown extends Page
     {
         $data = $this->form->getState();
 
+        // ── Uniqueness guards ─────────────────────────────────────────────
+        if (! empty($data['is_roles_dropdown']) && Dropdown::where('is_roles_dropdown', true)->exists()) {
+            Notification::make()
+                ->title('Roles Dropdown already exists')
+                ->body('Only one dropdown can be designated as the Roles Dropdown. Please disable the existing one first.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        if (! empty($data['is_permissions_dropdown']) && Dropdown::where('is_permissions_dropdown', true)->exists()) {
+            Notification::make()
+                ->title('Permissions Dropdown already exists')
+                ->body('Only one dropdown can be designated as the Permissions Dropdown. Please disable the existing one first.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+        // ─────────────────────────────────────────────────────────────────
+
         DB::transaction(function () use ($data): void {
             $dropdown = Dropdown::create([
-                'dropdown_Name' => $data['dropdown_Name'],
-                'dropdown_status' => $data['dropdown_status'],
+                'dropdown_Name'           => $data['dropdown_Name'],
+                'dropdown_status'         => $data['dropdown_status'],
+                'is_roles_dropdown'       => $data['is_roles_dropdown'] ?? false,
+                'is_permissions_dropdown' => $data['is_permissions_dropdown'] ?? false,
             ]);
 
             foreach ($data['dropdown_data'] ?? [] as $dropdownData) {
