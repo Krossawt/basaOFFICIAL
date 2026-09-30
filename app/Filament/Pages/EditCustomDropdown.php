@@ -22,11 +22,13 @@ class EditCustomDropdown extends CreateCustomDropdown
             ->findOrFail($record);
 
         $this->form->fill([
-            'dropdown_Name' => $this->dropdown->dropdown_Name,
-            'dropdown_status' => $this->dropdown->dropdown_status,
+            'dropdown_Name'           => $this->dropdown->dropdown_Name,
+            'dropdown_status'         => $this->dropdown->dropdown_status,
+            'is_roles_dropdown'       => $this->dropdown->is_roles_dropdown,
+            'is_permissions_dropdown' => $this->dropdown->is_permissions_dropdown,
             'dropdown_data' => $this->dropdown->data
                 ->map(fn ($data): array => [
-                    'dropdown_data_no' => $data->dropdown_data_no,
+                    'dropdown_data_no'   => $data->dropdown_data_no,
                     'dropdown_data_name' => $data->dropdown_data_name,
                 ])
                 ->all(),
@@ -42,11 +44,43 @@ class EditCustomDropdown extends CreateCustomDropdown
     {
         $data = $this->form->getState();
 
+        // ── Uniqueness guards (exclude current record) ────────────────────
+        if (! empty($data['is_roles_dropdown'])
+            && Dropdown::where('is_roles_dropdown', true)
+                       ->where('dropdown_no', '!=', $this->dropdown->dropdown_no)
+                       ->exists()
+        ) {
+            Notification::make()
+                ->title('Roles Dropdown already exists')
+                ->body('Only one dropdown can be designated as the Roles Dropdown. Please disable the existing one first.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        if (! empty($data['is_permissions_dropdown'])
+            && Dropdown::where('is_permissions_dropdown', true)
+                       ->where('dropdown_no', '!=', $this->dropdown->dropdown_no)
+                       ->exists()
+        ) {
+            Notification::make()
+                ->title('Permissions Dropdown already exists')
+                ->body('Only one dropdown can be designated as the Permissions Dropdown. Please disable the existing one first.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+        // ─────────────────────────────────────────────────────────────────
+
         DB::transaction(function () use ($data): void {
             $this->dropdown->update([
-                'dropdown_Name' => $data['dropdown_Name'],
-                'dropdown_status' => $data['dropdown_status'],
-                'dropdown_updated_on' => now(),
+                'dropdown_Name'           => $data['dropdown_Name'],
+                'dropdown_status'         => $data['dropdown_status'],
+                'is_roles_dropdown'       => $data['is_roles_dropdown'] ?? false,
+                'is_permissions_dropdown' => $data['is_permissions_dropdown'] ?? false,
+                'dropdown_updated_on'     => now(),
             ]);
 
             $items = collect($data['dropdown_data'] ?? [])

@@ -18,9 +18,18 @@ class Dropdown extends Model
 
     protected $keyType = 'string';
 
-    protected $fillable = ['dropdown_Name', 'dropdown_status'];
+    protected $fillable = [
+        'dropdown_Name',
+        'dropdown_status',
+        'is_roles_dropdown',
+        'is_permissions_dropdown',
+    ];
 
-    protected $casts = ['dropdown_status' => 'boolean'];
+    protected $casts = [
+        'dropdown_status'         => 'boolean',
+        'is_roles_dropdown'       => 'boolean',
+        'is_permissions_dropdown' => 'boolean',
+    ];
 
     public function data(): HasMany
     {
