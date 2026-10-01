@@ -2,7 +2,8 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Role;
+use App\Models\Dropdown;
+use App\Models\DropdownData;
 use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Filament\Tables\Columns\TextColumn;
@@ -59,37 +60,44 @@ class Roles extends Page implements HasTable
     {
         return $table
             ->query(
-                Role::query()->select(['id', 'roleID', 'roleName', 'created_at', 'updated_at'])
+                // Fetch dropdown_data rows that belong to the dropdown
+                // flagged as the Roles Dropdown (is_roles_dropdown = true)
+                DropdownData::query()
+                    ->whereHas('dropdown', fn (Builder $q) => $q->where('is_roles_dropdown', true))
+                    ->with('dropdown')
             )
             ->columns([
-                TextColumn::make('roleID')
-                    ->label('Role ID')
+                TextColumn::make('dropdown_data_official_no')
+                    ->label('Official No.')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->badge()
+                    ->color('primary'),
+
+                TextColumn::make('dropdown_data_no')
+                    ->label('Role No.')
                     ->searchable()
                     ->sortable()
                     ->copyable()
                     ->badge()
                     ->color('warning'),
 
-                TextColumn::make('roleName')
+                TextColumn::make('dropdown_data_name')
                     ->label('Role Name')
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->dateTime('M d, Y h:i A')
-                    ->sortable()
-                    ->toggleable(),
-
-                TextColumn::make('updated_at')
-                    ->label('Updated At')
-                    ->dateTime('M d, Y h:i A')
+                TextColumn::make('dropdown.dropdown_Name')
+                    ->label('From Dropdown')
                     ->sortable()
                     ->toggleable(),
             ])
-            ->defaultSort('roleID')
+            ->defaultSort('dropdown_data_official_no')
             ->striped()
-            ->paginated([10, 25, 50]);
+            ->paginated([10, 25, 50])
+            ->emptyStateHeading('No roles found')
+            ->emptyStateDescription('No dropdown has been designated as the Roles Dropdown yet, or it has no data.');
     }
 
     // ── Restrict to Super Admin only ─────────────────────────────
