@@ -82,9 +82,13 @@ class CreateCustomDropdown extends Page
                         Repeater::make('dropdown_data')
                             ->label('Dropdown Data')
                             ->schema([
+                                TextInput::make('dropdown_data_official_no')
+                                    ->label('Official No.')
+                                    ->placeholder('Auto-generated')
+                                    ->readOnly(),
                                 TextInput::make('dropdown_data_no')
-                                    ->label('Dropdown Data Table No.')
-                                    ->placeholder('Generated when saved')
+                                    ->label('Dropdown Data No.')
+                                    ->placeholder('Auto-generated')
                                     ->readOnly(),
                                 TextInput::make('dropdown_data_name')
                                     ->label('Dropdown Data Name')
@@ -92,7 +96,8 @@ class CreateCustomDropdown extends Page
                                     ->maxLength(25),
                             ])
                             ->table([
-                                TableColumn::make('Dropdown Data Table No.'),
+                                TableColumn::make('Official No.'),
+                                TableColumn::make('Dropdown Data No.'),
                                 TableColumn::make('Dropdown Data Name'),
                             ])
                             ->extraItemActions([

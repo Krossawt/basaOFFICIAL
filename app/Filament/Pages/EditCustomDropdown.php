@@ -28,8 +28,9 @@ class EditCustomDropdown extends CreateCustomDropdown
             'is_permissions_dropdown' => $this->dropdown->is_permissions_dropdown,
             'dropdown_data' => $this->dropdown->data
                 ->map(fn ($data): array => [
-                    'dropdown_data_no'   => $data->dropdown_data_no,
-                    'dropdown_data_name' => $data->dropdown_data_name,
+                    'dropdown_data_official_no' => $data->dropdown_data_official_no,
+                    'dropdown_data_no'          => $data->dropdown_data_no,
+                    'dropdown_data_name'        => $data->dropdown_data_name,
                 ])
                 ->all(),
         ]);
@@ -85,20 +86,22 @@ class EditCustomDropdown extends CreateCustomDropdown
 
             $items = collect($data['dropdown_data'] ?? [])
                 ->filter(fn (array $item): bool => filled($item['dropdown_data_name'] ?? null));
-            $existingNumbers = $items->pluck('dropdown_data_no')->filter()->all();
+
+            // Use dropdown_data_official_no (global PK) to track existing records
+            $existingOfficialNos = $items->pluck('dropdown_data_official_no')->filter()->all();
 
             $dataQuery = $this->dropdown->data();
 
-            if (filled($existingNumbers)) {
-                $dataQuery->whereNotIn('dropdown_data_no', $existingNumbers)->delete();
+            if (filled($existingOfficialNos)) {
+                $dataQuery->whereNotIn('dropdown_data_official_no', $existingOfficialNos)->delete();
             } else {
                 $dataQuery->delete();
             }
 
             foreach ($items as $item) {
-                if (filled($item['dropdown_data_no'] ?? null)) {
+                if (filled($item['dropdown_data_official_no'] ?? null)) {
                     $this->dropdown->data()
-                        ->where('dropdown_data_no', $item['dropdown_data_no'])
+                        ->where('dropdown_data_official_no', $item['dropdown_data_official_no'])
                         ->update(['dropdown_data_name' => $item['dropdown_data_name']]);
 
                     continue;
