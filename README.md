@@ -13,7 +13,7 @@ BASA aims to be the **single source of truth** — powerful for administrators, 
 
 ---
 
-## Tech Stack
+## TECH STACK
 
 | Layer | Technology |
 |---|---|
