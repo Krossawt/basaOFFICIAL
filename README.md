@@ -74,7 +74,7 @@ BASA aims to be the **single source of truth** — powerful for administrators, 
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url> basa
+git clone https://github.com/Krossawt/basaOFFICIAL.git
 cd basa
 ```
 
